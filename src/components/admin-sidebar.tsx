@@ -13,14 +13,20 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 
-const items = [
+type NavItem = {
+  to: "/admin" | "/admin/members" | "/admin/assessments" | "/admin/workouts" | "/admin/attendance" | "/admin/analytics";
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  exact?: boolean;
+};
+const items: NavItem[] = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { to: "/admin/members", label: "Members", icon: Users },
   { to: "/admin/assessments", label: "Assessments", icon: Activity },
   { to: "/admin/workouts", label: "Workouts", icon: Dumbbell },
   { to: "/admin/attendance", label: "Attendance", icon: CalendarCheck },
   { to: "/admin/analytics", label: "Analytics", icon: BarChart3 },
-] as const;
+];
 
 export function AdminSidebar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });

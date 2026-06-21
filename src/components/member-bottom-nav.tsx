@@ -2,12 +2,18 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { Dumbbell, Home, LineChart, PlayCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const items = [
+type NavItem = {
+  to: "/app" | "/app/workouts" | "/app/progress" | "/app/exercises";
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  exact?: boolean;
+};
+const items: NavItem[] = [
   { to: "/app", label: "Home", icon: Home, exact: true },
   { to: "/app/workouts", label: "Workouts", icon: Dumbbell },
   { to: "/app/progress", label: "Progress", icon: LineChart },
   { to: "/app/exercises", label: "Library", icon: PlayCircle },
-] as const;
+];
 
 export function MemberBottomNav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
