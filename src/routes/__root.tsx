@@ -11,6 +11,8 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { supabase } from "@/integrations/supabase/client";
+import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
   return (
@@ -76,21 +78,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
+      { name: "theme-color", content: "#0f172a" },
+      { title: "FitForge — Gym Management & Member Experience" },
+      { name: "description", content: "FitForge is a white-label gym management platform with a powerful admin portal and a beautiful member PWA." },
+      { property: "og:title", content: "FitForge" },
+      { property: "og:description", content: "White-label gym management & member experience platform." },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
+      { rel: "stylesheet", href: appCss },
+      { rel: "manifest", href: "/manifest.webmanifest" },
+      { rel: "apple-touch-icon", href: "/icons/icon-192.png" },
     ],
   }),
   shellComponent: RootShell,
@@ -115,11 +115,48 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+
+  useEffect(() => {
+    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
+      if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
+      router.invalidate();
+      if (event !== "SIGNED_OUT") queryClient.invalidateQueries();
+    });
+    return () => sub.subscription.unsubscribe();
+  }, [router, queryClient]);
+
+  // Register service worker only in published builds, never in preview/dev
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!("serviceWorker" in navigator)) return;
+    const host = window.location.hostname;
+    const blocked =
+      !import.meta.env.PROD ||
+      window.self !== window.top ||
+      host.startsWith("id-preview--") ||
+      host.startsWith("preview--") ||
+      host.endsWith("lovableproject.com") ||
+      host.endsWith("lovableproject-dev.com") ||
+      host.endsWith("beta.lovable.dev") ||
+      new URL(window.location.href).searchParams.get("sw") === "off";
+    if (blocked) {
+      navigator.serviceWorker.getRegistrations().then((regs) => {
+        regs.forEach((r) => {
+          if (r.active?.scriptURL.endsWith("/sw.js")) r.unregister();
+        });
+      });
+      return;
+    }
+    navigator.serviceWorker.register("/sw.js").catch(() => {});
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <div className="dark">
+        <Outlet />
+        <Toaster />
+      </div>
     </QueryClientProvider>
   );
 }
