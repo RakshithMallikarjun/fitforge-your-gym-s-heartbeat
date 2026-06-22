@@ -39,14 +39,14 @@ export function AdminSidebar() {
   }
 
   return (
-    <aside className="hidden w-64 shrink-0 flex-col border-r border-sidebar-border bg-sidebar p-4 md:flex">
-      <div className="mb-8 flex items-center gap-2 px-2">
-        <div className="grid h-9 w-9 place-items-center rounded-lg bg-gradient-primary shadow-glow">
-          <Dumbbell className="h-5 w-5 text-primary-foreground" />
+    <aside className="hidden w-64 shrink-0 flex-col border-r border-sidebar-border bg-sidebar p-5 md:flex">
+      <div className="mb-10 flex items-center gap-3 px-1">
+        <div className="grid h-10 w-10 place-items-center rounded-2xl bg-foreground text-background shadow-soft">
+          <Dumbbell className="h-5 w-5" />
         </div>
         <div>
-          <div className="text-sm font-bold tracking-tight">FitForge</div>
-          <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
+          <div className="text-base font-bold tracking-tight">FitForge</div>
+          <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
             Admin Portal
           </div>
         </div>
@@ -59,10 +59,10 @@ export function AdminSidebar() {
               key={item.to}
               to={item.to}
               className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                "flex items-center gap-3 rounded-full px-4 py-2.5 text-sm font-medium transition-all",
                 active
-                  ? "bg-primary/15 text-primary"
-                  : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                  ? "bg-foreground text-background shadow-soft"
+                  : "text-sidebar-foreground hover:bg-sidebar-accent",
               )}
             >
               <item.icon className="h-4 w-4" />
@@ -71,7 +71,7 @@ export function AdminSidebar() {
           );
         })}
       </nav>
-      <Button variant="ghost" className="justify-start" onClick={signOut}>
+      <Button variant="ghost" className="justify-start rounded-full" onClick={signOut}>
         <LogOut className="mr-2 h-4 w-4" /> Sign out
       </Button>
     </aside>

@@ -1,6 +1,6 @@
-import { createFileRoute, Navigate, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, Navigate, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Dumbbell, Loader2 } from "lucide-react";
+import { ArrowLeft, Dumbbell, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { FloatingBlobs } from "@/components/floating-blobs";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({ meta: [{ title: "Sign in — FitForge" }] }),
@@ -32,12 +33,8 @@ function AuthPage() {
     try {
       if (mode === "signup") {
         const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: window.location.origin,
-            data: { full_name: fullName },
-          },
+          email, password,
+          options: { emailRedirectTo: window.location.origin, data: { full_name: fullName } },
         });
         if (error) throw error;
         toast.success("Account created. Welcome to FitForge.");
@@ -56,9 +53,7 @@ function AuthPage() {
 
   async function handleGoogle() {
     setBusy(true);
-    const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
-    });
+    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
     if (result.error) {
       toast.error(result.error.message ?? "Google sign-in failed");
       setBusy(false);
@@ -68,74 +63,60 @@ function AuthPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="w-full max-w-sm">
-        <div className="mb-8 flex flex-col items-center">
-          <div className="mb-3 grid h-12 w-12 place-items-center rounded-xl bg-gradient-primary shadow-glow">
-            <Dumbbell className="h-6 w-6 text-primary-foreground" />
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4 py-10">
+      <FloatingBlobs />
+
+      <Link
+        to="/"
+        className="glass absolute left-6 top-6 inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-foreground shadow-floating transition-transform hover:-translate-y-0.5"
+      >
+        <ArrowLeft className="h-4 w-4" /> Home
+      </Link>
+
+      <div className="relative w-full max-w-md animate-rise">
+        <div className="mb-10 flex flex-col items-center">
+          <div className="mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-foreground text-background shadow-floating">
+            <Dumbbell className="h-6 w-6" />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight">FitForge</h1>
-          <p className="text-sm text-muted-foreground">Train. Track. Transform.</p>
+          <h1 className="text-display text-5xl">FitForge</h1>
+          <p className="mt-2 text-sm text-muted-foreground">Train. Track. Transform.</p>
         </div>
 
-        <div className="rounded-2xl border border-border/60 bg-card p-6 shadow-elevated">
+        <div className="glass-strong shadow-floating rounded-[32px] p-8">
           <Tabs value={mode} onValueChange={(v) => setMode(v as typeof mode)}>
-            <TabsList className="mb-6 grid w-full grid-cols-2">
-              <TabsTrigger value="signin">Sign in</TabsTrigger>
-              <TabsTrigger value="signup">Sign up</TabsTrigger>
+            <TabsList className="mb-6 grid w-full grid-cols-2 rounded-full bg-secondary p-1">
+              <TabsTrigger value="signin" className="rounded-full">Sign in</TabsTrigger>
+              <TabsTrigger value="signup" className="rounded-full">Sign up</TabsTrigger>
             </TabsList>
 
             <Button
-              type="button"
-              variant="outline"
-              className="w-full"
-              onClick={handleGoogle}
-              disabled={busy}
+              type="button" variant="outline"
+              className="w-full rounded-full border-foreground/15 bg-white/70 py-6 font-medium backdrop-blur hover:bg-white"
+              onClick={handleGoogle} disabled={busy}
             >
               <GoogleIcon /> Continue with Google
             </Button>
 
-            <div className="my-5 flex items-center gap-3 text-xs text-muted-foreground">
-              <div className="h-px flex-1 bg-border" /> OR <div className="h-px flex-1 bg-border" />
+            <div className="my-6 flex items-center gap-3 text-xs uppercase tracking-[0.2em] text-muted-foreground">
+              <div className="h-px flex-1 bg-border" /> or <div className="h-px flex-1 bg-border" />
             </div>
 
             <form className="space-y-4" onSubmit={handleEmail}>
               <TabsContent value="signup" className="m-0 space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="full_name">Full name</Label>
-                  <Input
-                    id="full_name"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    placeholder="Alex Carter"
-                    required={mode === "signup"}
-                  />
+                  <Input id="full_name" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Alex Carter" required={mode === "signup"} className="rounded-2xl border-foreground/15 bg-white/60 py-6" />
                 </div>
               </TabsContent>
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  required
-                />
+                <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required className="rounded-2xl border-foreground/15 bg-white/60 py-6" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  required
-                  minLength={6}
-                />
+                <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required minLength={6} className="rounded-2xl border-foreground/15 bg-white/60 py-6" />
               </div>
-              <Button type="submit" className="w-full" disabled={busy}>
+              <Button type="submit" className="w-full rounded-full bg-foreground py-6 text-base font-medium text-background hover:bg-foreground/90" disabled={busy}>
                 {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 {mode === "signup" ? "Create account" : "Sign in"}
               </Button>
