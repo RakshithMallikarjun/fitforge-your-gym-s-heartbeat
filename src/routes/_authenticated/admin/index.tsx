@@ -286,4 +286,3 @@ const quickActions = [
   { label: "Check-in", sub: "Mark today's attendance", Icon: CalendarCheck, tint: "linear-gradient(135deg,#ec4899,#db2777)" },
 ];
 
-import { Activity } from "lucide-react";
