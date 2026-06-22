@@ -69,7 +69,7 @@ export function AdminSidebar() {
               )}
               style={active ? { backgroundImage: "linear-gradient(135deg,#4f46e2,#7c3aed)", boxShadow: "0 10px 28px -10px rgba(79,70,226,0.55)" } : undefined}
             >
-              <item.icon className="h-5 w-5" strokeWidth={2} />
+              <item.icon className="h-5 w-5" />
               <span className="pointer-events-none absolute left-full ml-3 whitespace-nowrap rounded-lg bg-slate-900 px-2 py-1 text-[11px] font-medium text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
                 {item.label}
               </span>
