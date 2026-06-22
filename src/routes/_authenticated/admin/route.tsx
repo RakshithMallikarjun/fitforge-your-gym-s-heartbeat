@@ -20,7 +20,7 @@ function AdminLayout() {
   if (!isStaff) return <Navigate to="/app" />;
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="mesh-bg flex min-h-screen">
       <AdminSidebar />
       <main className="flex-1 overflow-x-hidden">
         <Outlet />
