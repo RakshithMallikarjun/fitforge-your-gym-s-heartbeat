@@ -18,8 +18,8 @@ const items: NavItem[] = [
 export function MemberBottomNav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-border/60 bg-background/95 backdrop-blur pb-[env(safe-area-inset-bottom)]">
-      <ul className="mx-auto flex max-w-md items-center justify-around px-2 py-2">
+    <nav className="fixed bottom-4 left-1/2 z-40 -translate-x-1/2 pb-[env(safe-area-inset-bottom)]">
+      <ul className="glass-strong shadow-floating mx-auto flex items-center gap-1 rounded-full px-2 py-2">
         {items.map((it) => {
           const active = it.exact ? pathname === it.to : pathname.startsWith(it.to);
           return (
@@ -27,11 +27,13 @@ export function MemberBottomNav() {
               <Link
                 to={it.to}
                 className={cn(
-                  "flex flex-col items-center gap-0.5 rounded-lg px-4 py-1.5 text-[11px] transition-colors",
-                  active ? "text-primary" : "text-muted-foreground hover:text-foreground",
+                  "flex flex-col items-center gap-0.5 rounded-full px-5 py-2 text-[10px] font-medium uppercase tracking-wider transition-all",
+                  active
+                    ? "bg-foreground text-background"
+                    : "text-muted-foreground hover:text-foreground",
                 )}
               >
-                <it.icon className={cn("h-5 w-5", active && "drop-shadow-[0_0_8px_hsl(var(--primary)/0.6)]")} />
+                <it.icon className="h-5 w-5" />
                 {it.label}
               </Link>
             </li>
