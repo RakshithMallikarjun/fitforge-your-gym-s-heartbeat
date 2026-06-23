@@ -63,7 +63,7 @@ export function AdminSidebar() {
                 to={item.to}
                 className={cn("sidebar-link", active && "sidebar-link-active")}
               >
-                <item.icon className="h-[18px] w-[18px]" strokeWidth={2} />
+                <item.icon className="h-[18px] w-[18px]" />
                 <span>{item.label}</span>
               </Link>
             );
