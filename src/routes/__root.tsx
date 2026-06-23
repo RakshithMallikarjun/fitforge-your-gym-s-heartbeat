@@ -79,7 +79,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
-      { name: "theme-color", content: "#fafaf8" },
+      { name: "theme-color", content: "#f8fafc" },
       { title: "FitForge — Gym Management & Member Experience" },
       { name: "description", content: "FitForge is a white-label gym management platform with a powerful admin portal and a beautiful member PWA." },
       { property: "og:title", content: "FitForge" },
@@ -93,7 +93,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "apple-touch-icon", href: "/icons/icon-192.png" },
       { rel: "preconnect", href: "https://api.fontshare.com" },
       { rel: "preconnect", href: "https://cdn.fontshare.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@800,700,500&f[]=satoshi@500,400,700&display=swap" },
+      { rel: "stylesheet", href: "https://api.fontshare.com/v2/css?f[]=general-sans@500,600,700&f[]=satoshi@400,500,700&display=swap" },
     ],
   }),
   shellComponent: RootShell,

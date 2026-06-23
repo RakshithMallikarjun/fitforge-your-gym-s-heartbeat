@@ -6,12 +6,12 @@ import {
   Dumbbell,
   LayoutDashboard,
   LogOut,
+  ShieldCheck,
   Users,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/hooks/use-auth";
 
 type NavItem = {
   to: "/admin" | "/admin/members" | "/admin/assessments" | "/admin/workouts" | "/admin/attendance" | "/admin/analytics";
@@ -22,16 +22,15 @@ type NavItem = {
 const items: NavItem[] = [
   { to: "/admin", label: "Overview", icon: LayoutDashboard, exact: true },
   { to: "/admin/members", label: "Members", icon: Users },
-  { to: "/admin/assessments", label: "Assess", icon: Activity },
+  { to: "/admin/assessments", label: "Assessments", icon: Activity },
   { to: "/admin/workouts", label: "Workouts", icon: Dumbbell },
-  { to: "/admin/attendance", label: "Attend", icon: CalendarCheck },
+  { to: "/admin/attendance", label: "Attendance", icon: CalendarCheck },
   { to: "/admin/analytics", label: "Analytics", icon: BarChart3 },
 ];
 
 export function AdminSidebar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
-  const { user } = useAuth();
 
   async function signOut() {
     await supabase.auth.signOut();
@@ -39,58 +38,59 @@ export function AdminSidebar() {
     navigate({ to: "/auth" });
   }
 
-  const initials = (user?.email ?? "F")[0]?.toUpperCase() ?? "F";
-
   return (
-    <aside
-      className="sticky top-0 hidden h-screen w-24 shrink-0 flex-col items-center justify-between border-r border-white/40 py-6 md:flex"
-      style={{
-        backgroundColor: "rgba(255,255,255,0.55)",
-        backdropFilter: "blur(20px) saturate(160%)",
-      }}
-    >
-      <Link to="/admin" className="grid h-12 w-12 place-items-center rounded-2xl text-white shadow-lg animate-float-gentle" style={{ backgroundImage: "linear-gradient(135deg,#4f46e2,#7c3aed)", boxShadow: "0 12px 32px -8px rgba(79,70,226,0.55)" }}>
-        <Dumbbell className="h-6 w-6" />
-      </Link>
+    <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col justify-between border-r border-slate-200 bg-white px-5 py-6 md:flex">
+      <div>
+        <Link to="/admin" className="flex items-center gap-3 px-2">
+          <div className="grid h-10 w-10 place-items-center rounded-xl bg-emerald-600 text-white shadow-soft">
+            <Dumbbell className="h-5 w-5" strokeWidth={2.25} />
+          </div>
+          <div>
+            <div className="text-display text-base font-bold text-slate-900">FitForge</div>
+            <div className="text-[11px] font-medium text-slate-500">Admin Portal</div>
+          </div>
+        </Link>
 
-      <nav className="flex flex-col items-center gap-3">
-        {items.map((item) => {
-          const active = item.exact ? pathname === item.to : pathname.startsWith(item.to);
-          return (
-            <Link
-              key={item.to}
-              to={item.to}
-              title={item.label}
-              className={cn(
-                "group relative grid h-12 w-12 place-items-center rounded-2xl transition-all duration-300",
-                active
-                  ? "text-white shadow-lg"
-                  : "text-slate-400 hover:bg-white/60 hover:text-slate-700",
-              )}
-              style={active ? { backgroundImage: "linear-gradient(135deg,#4f46e2,#7c3aed)", boxShadow: "0 10px 28px -10px rgba(79,70,226,0.55)" } : undefined}
-            >
-              <item.icon className="h-5 w-5" />
-              <span className="pointer-events-none absolute left-full ml-3 whitespace-nowrap rounded-lg bg-slate-900 px-2 py-1 text-[11px] font-medium text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
-                {item.label}
-              </span>
-            </Link>
-          );
-        })}
-      </nav>
+        <nav className="mt-10 flex flex-col gap-1">
+          <div className="mb-2 px-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+            Workspace
+          </div>
+          {items.map((item) => {
+            const active = item.exact ? pathname === item.to : pathname.startsWith(item.to);
+            return (
+              <Link
+                key={item.to}
+                to={item.to}
+                className={cn("sidebar-link", active && "sidebar-link-active")}
+              >
+                <item.icon className="h-[18px] w-[18px]" />
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
+      </div>
 
-      <div className="flex flex-col items-center gap-3">
-        <button
-          onClick={signOut}
-          title="Sign out"
-          className="grid h-12 w-12 place-items-center rounded-2xl text-slate-400 transition-all hover:bg-white/60 hover:text-rose-500"
-        >
-          <LogOut className="h-5 w-5" />
-        </button>
-        <div className="rounded-full p-[2px]" style={{ backgroundImage: "linear-gradient(135deg,#4f46e2,#ec4899)" }}>
-          <div className="grid h-10 w-10 place-items-center rounded-full bg-white text-sm font-bold text-slate-900">
-            {initials}
+      <div className="flex flex-col gap-3">
+        <div className="rounded-2xl bg-emerald-50 p-4">
+          <div className="flex items-center gap-2">
+            <div className="grid h-8 w-8 place-items-center rounded-full bg-emerald-600 text-white">
+              <ShieldCheck className="h-4 w-4" />
+            </div>
+            <div>
+              <div className="text-[12px] font-semibold text-emerald-900">Practice Verified</div>
+              <div className="text-[10px] text-emerald-700/80">All systems operational</div>
+            </div>
           </div>
         </div>
+
+        <button
+          onClick={signOut}
+          className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium text-red-500 transition-colors hover:bg-red-50"
+        >
+          <LogOut className="h-[18px] w-[18px]" />
+          Sign out
+        </button>
       </div>
     </aside>
   );
