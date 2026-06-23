@@ -19,7 +19,7 @@ export function MemberBottomNav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   return (
     <nav className="fixed bottom-4 left-1/2 z-40 -translate-x-1/2 pb-[env(safe-area-inset-bottom)]">
-      <ul className="glass-strong shadow-floating mx-auto flex items-center gap-1 rounded-full px-2 py-2">
+      <ul className="mx-auto flex items-center gap-1 rounded-full border border-slate-200 bg-white/95 px-2 py-2 shadow-floating backdrop-blur-md">
         {items.map((it) => {
           const active = it.exact ? pathname === it.to : pathname.startsWith(it.to);
           return (
@@ -27,10 +27,10 @@ export function MemberBottomNav() {
               <Link
                 to={it.to}
                 className={cn(
-                  "flex flex-col items-center gap-0.5 rounded-full px-5 py-2 text-[10px] font-medium uppercase tracking-wider transition-all",
+                  "flex flex-col items-center gap-0.5 rounded-full px-5 py-2 text-[10px] font-semibold uppercase tracking-wider transition-all",
                   active
-                    ? "bg-foreground text-background"
-                    : "text-muted-foreground hover:text-foreground",
+                    ? "bg-emerald-50 text-emerald-600"
+                    : "text-slate-500 hover:text-slate-900",
                 )}
               >
                 <it.icon className="h-5 w-5" />
