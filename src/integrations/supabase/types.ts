@@ -170,11 +170,13 @@ export type Database = {
           created_at: string
           email: string | null
           id: string
+          is_active: boolean
           logo_url: string | null
           name: string
           phone: string | null
           primary_color: string | null
           slug: string
+          subscription_plan: string
           updated_at: string
         }
         Insert: {
@@ -182,11 +184,13 @@ export type Database = {
           created_at?: string
           email?: string | null
           id?: string
+          is_active?: boolean
           logo_url?: string | null
           name: string
           phone?: string | null
           primary_color?: string | null
           slug: string
+          subscription_plan?: string
           updated_at?: string
         }
         Update: {
@@ -194,11 +198,13 @@ export type Database = {
           created_at?: string
           email?: string | null
           id?: string
+          is_active?: boolean
           logo_url?: string | null
           name?: string
           phone?: string | null
           primary_color?: string | null
           slug?: string
+          subscription_plan?: string
           updated_at?: string
         }
         Relationships: []
@@ -261,6 +267,38 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "profiles_gym_id_fkey"
+            columns: ["gym_id"]
+            isOneToOne: false
+            referencedRelation: "gyms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      trainer_assignments: {
+        Row: {
+          assigned_at: string
+          gym_id: string
+          id: string
+          member_id: string
+          trainer_id: string
+        }
+        Insert: {
+          assigned_at?: string
+          gym_id: string
+          id?: string
+          member_id: string
+          trainer_id: string
+        }
+        Update: {
+          assigned_at?: string
+          gym_id?: string
+          id?: string
+          member_id?: string
+          trainer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trainer_assignments_gym_id_fkey"
             columns: ["gym_id"]
             isOneToOne: false
             referencedRelation: "gyms"
@@ -460,6 +498,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_access_member: { Args: { _member_id: string }; Returns: boolean }
       current_user_gym_id: { Args: never; Returns: string }
       has_role: {
         Args: {
@@ -468,10 +507,13 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_assigned_trainer: { Args: { _member_id: string }; Returns: boolean }
+      is_gym_manager: { Args: { _gym_id: string }; Returns: boolean }
       is_gym_staff: { Args: { _gym_id: string }; Returns: boolean }
+      is_super_admin: { Args: never; Returns: boolean }
     }
     Enums: {
-      app_role: "super_admin" | "gym_admin" | "trainer" | "member"
+      app_role: "super_admin" | "gym_owner" | "trainer" | "member"
       gender_type: "male" | "female" | "other" | "prefer_not_to_say"
     }
     CompositeTypes: {
@@ -600,7 +642,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["super_admin", "gym_admin", "trainer", "member"],
+      app_role: ["super_admin", "gym_owner", "trainer", "member"],
       gender_type: ["male", "female", "other", "prefer_not_to_say"],
     },
   },
